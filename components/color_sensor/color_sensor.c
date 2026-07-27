@@ -93,8 +93,8 @@ esp_err_t color_sensor_init(void)
     }
     ESP_LOGI(TAG, "TCS34725 ID: 0x%02X (expect 0x44 or 0x4D)", id);
 
-    tcs_write8(TCS34725_ATIME, 0xEB);   // ~101ms integration time
-    tcs_write8(TCS34725_CONTROL, 0x01); // 4x gain
+    tcs_write8(TCS34725_ATIME, 0xD5);   // true ~101ms integration time (0xEB was actually ~50ms)
+    tcs_write8(TCS34725_CONTROL, 0x02); // 16x gain (was 4x) - more signal in low light
 
     tcs_write8(TCS34725_ENABLE, TCS34725_ENABLE_PON);
     vTaskDelay(pdMS_TO_TICKS(3));

@@ -74,8 +74,8 @@ static esp_err_t wifi_init_sta(void)
 
     wifi_config_t wifi_config = {
         .sta = {
-            .ssid = CONFIG_WIFI_SSID,
-            .password = CONFIG_WIFI_PASSWORD,
+            .ssid = "Marv",
+            .password = "12345678",
             .threshold.authmode = WIFI_AUTH_WPA2_PSK,
         },
     };

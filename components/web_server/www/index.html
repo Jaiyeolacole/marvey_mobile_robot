@@ -284,7 +284,7 @@
         <svg viewBox="0 0 24 24" fill="none"><path d="M7 3h10M9 3v4.2a2 2 0 0 1-.5 1.32L5.8 12.4A4 4 0 0 0 8.85 19h6.3a4 4 0 0 0 3.05-6.6l-2.7-3.88A2 2 0 0 1 15 7.2V3" stroke="#06141C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M7.5 14.5h9" stroke="#06141C" stroke-width="1.8" stroke-linecap="round"/></svg>
       </div>
       <div>
-        <h1>Drug Delivery Robot</h1>
+        <h1>Basic Medical Delivery Robot</h1>
         <div class="subtitle">Field Control Terminal</div>
       </div>
     </div>
@@ -498,15 +498,22 @@ el('connectBtn').addEventListener('click', () => {
   state.baseUrl = `http://${ip}`;
   logEvent(`Connecting to ${ip}...`, 'info');
 
-  apiCall('/api/status').then((data) => {
-    if (data) {
+  // Use a raw fetch here (not apiCall) - apiCall refuses to run until
+  // state.connected is true, so it can never be used for the initial
+  // reachability check that sets state.connected in the first place.
+  fetch(state.baseUrl + '/api/status')
+    .then((res) => {
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    })
+    .then((data) => {
       setConnected(true);
       logEvent(`Connected to robot at ${ip}.`, 'success');
       state.pollTimer = setInterval(pollStatus, 1000);
-    } else {
-      logEvent('Could not reach robot. Check IP and network.', 'error');
-    }
-  });
+    })
+    .catch((err) => {
+      logEvent(`Could not reach robot. Check IP and network. (${err.message})`, 'error');
+    });
 });
 
 /* ---------------- Mode toggle ---------------- */
